@@ -14,11 +14,11 @@ git clone https://github.com/TobyLobster/ImportLDraw.git
 ADDON_PATH="$LEGO_HOME/ImportLDraw"
 
 ## install add-on
-blender --background --python install_addon.py -- "$ADDON_PATH"
+blender --background --python install_addon.py -- "$ADDON_PATH" "importldraw"
 
 ## download ldraw parts
-wget http://www.ldraw.org/library/updates/complete.zip
+wget -nc http://www.ldraw.org/library/updates/complete.zip
 unzip complete.zip
 
 ## run blender
-blender --background --addons importldraw --python render.py -- "$LEGO_HOME/ldraw/parts/1.dat" "$LEGO_HOME/output/1.png" "$LEGO_HOME/ldraw"
+blender --background --addons importldraw --python render.py -- "$LEGO_HOME/ldraw/parts/1.dat" "$LEGO_HOME/test_render/1.png" "$LEGO_HOME/ldraw"

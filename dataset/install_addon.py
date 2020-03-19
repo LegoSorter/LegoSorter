@@ -10,9 +10,10 @@ argv = sys.argv
 argv = argv[argv.index("--") + 1:]
 
 addon_path = argv[0]
-addons_dir = bpy.utils.script_path_user() + "/addons/importldraw"
+addon_name = argv[1]
+addons_dir = bpy.utils.script_path_user() + "/addons/" + addon_name
 
 copy_tree(addon_path, addons_dir)
 
-addon_utils.enable("importldraw")
+addon_utils.enable(addon_name)
 bpy.ops.wm.save_userpref()
