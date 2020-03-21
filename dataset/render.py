@@ -14,7 +14,7 @@ def main(args):
 def import_part(part_path, ldraw_path):
     bpy.ops.import_scene.importldraw(filepath=part_path, ldrawPath=ldraw_path)
 
-    objects = [x for x in bpy.data.objects if ".dat" in x.name]
+    objects = [x for x in bpy.data.objects if os.path.basename(part_path) in x.name]
     return objects[0]
 
 
