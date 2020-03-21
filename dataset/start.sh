@@ -22,4 +22,4 @@ wget -nc http://www.ldraw.org/library/updates/complete.zip
 unzip complete.zip
 
 ## run blender
-blender --background --addons importldraw --python render.py -- "$WORKING_DIRECTORY/ldraw/parts/1.dat" "$WORKING_DIRECTORY/test_render/1.png" "$WORKING_DIRECTORY/ldraw"
+blender --background --addons importldraw --python test_render.py -- "$WORKING_DIRECTORY/ldraw/parts/1.dat" "$WORKING_DIRECTORY/test_render/1.png" "$WORKING_DIRECTORY/ldraw"
