@@ -32,6 +32,58 @@ class BrickRenderer:
     def prepare_scene(self):
         self.load_pattern_scene()
         self.import_brick_scene()
+        self.__brick_object = [x for x in bpy.data.objects if os.path.basename(self.__part_path) in x.name][0]
+        pattern_object = bpy.data.objects["PatternBrick"]
+        self.__brick_object.active_material = pattern_object.active_material
+
+        bpy.context.window.scene = bpy.data.scenes["TargetScene"]
+        bpy.context.scene.collection.objects.link(self.__brick_object)
+        return True
+
+    def render(self, samples_count=1, transformation=None, **kwargs):
+        part_name = os.path.basename(self.__part_path).split(".")[0]  # Extract part name
+        bpy.context.scene.render.resolution_x, bpy.context.scene.render.resolution_y = self.resolution
+        bpy.context.scene.cycles.device = 'GPU'
+        bpy.context.scene.cycles.samples = 10
+
+        for i in range(samples_count):
+            bpy.context.scene.render.filepath = os.path.join(self.output_path, "{:s}_{:d}.png".format(part_name, i))
+            print("------------------------------------------")
+            print("Rendering {} of {}".format(i, samples_count))
+            print("------------------------------------------")
+            bpy.ops.render.render(write_still=True)
+            transformation(obj=self.get_brick_object(), **kwargs) if transformation \
+                else print("Transformation not defined")
+        return
+
+
+class SceneNotPreparedException(Exception):
+    pass
+
+
+class BrickRenderer:
+    def __init__(self, part_path, ldraw_path, pattern_scene_path, resolution, output_path):
+        self.__part_path = part_path
+        self.__ldraw_path = ldraw_path
+        self.resolution = resolution
+        self.__pattern_scene_path = pattern_scene_path
+        self.__brick_object = None
+        self.output_path = output_path
+
+    def load_pattern_scene(self):
+        bpy.ops.wm.open_mainfile(filepath=self.__pattern_scene_path)
+
+    def get_brick_object(self):
+        if not self.__brick_object:
+            raise SceneNotPreparedException()
+        return self.__brick_object
+
+    def import_brick_scene(self):
+        bpy.ops.import_scene.importldraw(filepath=self.__part_path, ldrawPath=self.__ldraw_path)
+
+    def prepare_scene(self):
+        self.load_pattern_scene()
+        self.import_brick_scene()
         pattern_object = bpy.data.objects["PatternBrick"]
         self.__brick_object = [x for x in bpy.data.objects if os.path.basename(self.__part_path) in x.name][0]
         self.__brick_object.active_material = pattern_object.active_material
@@ -65,7 +117,7 @@ def main(args):
 
 
 def shift_horizontally(obj, shift=None):
-    obj.location.x += obj.location.x+shift
+    obj.location.x += shift
 
 
 def rotate_object(obj, x=0.0, y=0.0, z=0.0):
