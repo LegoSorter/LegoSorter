@@ -1,5 +1,6 @@
 # python
 import sys
+import os
 from distutils.dir_util import copy_tree
 
 # blender
@@ -11,7 +12,7 @@ argv = argv[argv.index("--") + 1:]
 
 addon_path = argv[0]
 addon_name = argv[1]
-addons_dir = bpy.utils.script_path_user() + "/addons/" + addon_name
+addons_dir = os.path.join(bpy.utils.script_path_user(), "addons", addon_name)
 
 copy_tree(addon_path, addons_dir)
 
