@@ -3,6 +3,7 @@ import os
 import bpy
 import sys
 import math
+from random import random
 
 
 class SceneNotPreparedException(Exception):
@@ -28,13 +29,16 @@ class BrickRenderer:
 
     def import_brick_scene(self):
         bpy.ops.import_scene.importldraw(filepath=self.__part_path, ldrawPath=self.__ldraw_path)
+        self.__brick_object = [x for x in bpy.data.objects if os.path.basename(self.__part_path) in x.name][0]
+
+        set_object_position(self.__brick_object, 0, 0, 1.5 * self.__brick_object.location.z)
+        set_object_rotation(self.__brick_object, random() * 360, random() * 360, random() * 360)
 
     def prepare_scene(self):
         self.load_pattern_scene()
         self.import_brick_scene()
-        pattern_object = bpy.data.objects["PatternBrick"]
-        self.__brick_object = [x for x in bpy.data.objects if os.path.basename(self.__part_path) in x.name][0]
-        self.__brick_object.active_material = pattern_object.active_material
+        self.set_physics()
+        self.__brick_object.active_material = bpy.data.objects["PatternBrick"].active_material
 
         bpy.context.window.scene = bpy.data.scenes["TargetScene"]
         bpy.context.scene.collection.objects.link(self.__brick_object)
@@ -46,6 +50,10 @@ class BrickRenderer:
         bpy.context.scene.cycles.device = 'GPU'
         bpy.context.scene.cycles.samples = 10
 
+        # Skip animation
+        for i in range(0, 100):
+            bpy.context.scene.frame_set(i)
+
         for i in range(samples_count):
             bpy.context.scene.render.filepath = os.path.join(self.output_path, "{:s}_{:d}.png".format(part_name, i))
             print("------------------------------------------")
@@ -56,6 +64,22 @@ class BrickRenderer:
                 else print("Transformation not defined")
         return
 
+    def set_physics(self):
+        scene = bpy.data.scenes['TargetScene']
+        bpy.context.window.scene = scene
+        bpy.ops.rigidbody.world_add()
+
+        ground = scene.objects['Plane.001']
+        bpy.context.view_layer.objects.active = ground
+
+        # This usage of 'object_add' will initialize a list of objects for the rigid body world
+        bpy.ops.rigidbody.object_add()
+        ground.rigid_body.type = 'PASSIVE'
+
+        scene.rigidbody_world.collection.objects.link(self.__brick_object)
+        self.__brick_object.rigid_body.collision_shape = 'BOX'
+        self.__brick_object.rigid_body.type = 'ACTIVE'
+
 
 def main(args):
     brickRender = BrickRenderer(args.part, args.ldraw, args.scene, (args.width, args.height),
@@ -65,7 +89,11 @@ def main(args):
 
 
 def shift_horizontally(obj, shift=None):
-    obj.location.x += obj.location.x+shift
+    # It's tricky to move an object which is animated so I move a whole world except this object in the opposite
+    # direction
+    for o in bpy.data.objects:
+        if o.name != obj.name:
+            o.location.x -= shift
 
 
 def rotate_object(obj, x=0.0, y=0.0, z=0.0):
@@ -78,6 +106,11 @@ def set_object_rotation(obj, x=0.0, y=0.0, z=0.0):
     obj.rotation_euler[0] = degree_to_pi(x)
     obj.rotation_euler[1] = degree_to_pi(y)
     obj.rotation_euler[2] = degree_to_pi(z)
+    print("Object rotation set to {} {} {}".format(obj.rotation_euler[0], obj.rotation_euler[1], obj.rotation_euler[2]))
+
+
+def set_object_position(obj, x=0.0, y=0.0, z=0.0):
+    obj.location = (x, y, z)
 
 
 def degree_to_pi(degrees):
