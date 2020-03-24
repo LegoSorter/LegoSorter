@@ -4,6 +4,7 @@
 
 import argparse
 import os
+import sys
 import json
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -12,6 +13,12 @@ if __name__ == "__main__":
     args = parser.parse_args()
     input_directory = args.i
     output_file = args.o
+    if not os.path.exists(input_directory) or os.path.isfile(input_directory):
+        print(f"Directory {input_directory} doesn't exist or is a file, exiting...")
+        sys.exit()
+    if os.path.exists(output_file):
+        print(f"File {output_file} already exists, exiting...")
+        sys.exit()
     part_list = {"parts": []}
     for file_name in sorted(os.listdir(input_directory)):
         if file_name.endswith('.dat'):
