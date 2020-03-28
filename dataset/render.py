@@ -28,7 +28,8 @@ class BrickRenderer:
         return self.__brick_object
 
     def import_brick_scene(self):
-        bpy.ops.import_scene.importldraw(filepath=self.__part_path, ldrawPath=self.__ldraw_path)
+        bpy.ops.import_scene.importldraw(filepath=self.__part_path, ldrawPath=self.__ldraw_path,
+                                         importCameras=False, positionCamera=False)
         self.__brick_object = [x for x in bpy.data.objects if os.path.basename(self.__part_path) in x.name][0]
 
         set_object_position(self.__brick_object, 0, 0, 1.5 * self.__brick_object.location.z)
@@ -47,8 +48,15 @@ class BrickRenderer:
     def render(self, samples_count=1, transformation=None, **kwargs):
         part_name = os.path.basename(self.__part_path).split(".")[0]  # Extract part name
         bpy.context.scene.render.resolution_x, bpy.context.scene.render.resolution_y = self.resolution
+        bpy.context.scene.camera = bpy.data.objects['Camera']
         bpy.context.scene.cycles.device = 'GPU'
-        bpy.context.scene.cycles.samples = 10
+        # bpy.context.scene.render.engine = 'BLENDER_EEVEE'
+        bpy.context.scene.render.engine = 'CYCLES'
+
+        # bpy.context.scene.eevee.taa_render_samples = 256
+        # bpy.context.scene.eevee.taa_samples = 64
+
+        bpy.context.scene.cycles.samples = 400
 
         # Skip animation
         for i in range(0, 100):
