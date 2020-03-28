@@ -29,7 +29,7 @@ class BrickRenderer:
 
     def import_brick_scene(self):
         bpy.ops.import_scene.importldraw(filepath=self.__part_path, ldrawPath=self.__ldraw_path,
-                                         importCameras=False, positionCamera=False)
+                                         importCameras=False, positionCamera=False, addEnvironment=False)
         self.__brick_object = [x for x in bpy.data.objects if os.path.basename(self.__part_path) in x.name][0]
 
         set_object_position(self.__brick_object, 0, 0, 1.5 * self.__brick_object.location.z)
@@ -42,13 +42,18 @@ class BrickRenderer:
         self.__brick_object.active_material = bpy.data.objects["PatternBrick"].active_material
 
         bpy.context.window.scene = bpy.data.scenes["TargetScene"]
+        bpy.context.scene.camera.location = (7.0, 0.0, 4.0)
         bpy.context.scene.collection.objects.link(self.__brick_object)
         return True
 
     def render(self, samples_count=1, transformation=None, **kwargs):
         part_name = os.path.basename(self.__part_path).split(".")[0]  # Extract part name
         bpy.context.scene.render.resolution_x, bpy.context.scene.render.resolution_y = self.resolution
+
         bpy.context.scene.camera = bpy.data.objects['Camera']
+        bpy.context.scene.camera.data.sensor_fit = 'VERTICAL'
+        bpy.context.scene.camera.data.lens = 15
+
         bpy.context.scene.cycles.device = 'GPU'
         # bpy.context.scene.render.engine = 'BLENDER_EEVEE'
         bpy.context.scene.render.engine = 'CYCLES'
@@ -56,7 +61,7 @@ class BrickRenderer:
         # bpy.context.scene.eevee.taa_render_samples = 256
         # bpy.context.scene.eevee.taa_samples = 64
 
-        bpy.context.scene.cycles.samples = 400
+        bpy.context.scene.cycles.samples = 50
 
         # Skip animation
         for i in range(0, 100):
@@ -75,17 +80,14 @@ class BrickRenderer:
     def set_physics(self):
         scene = bpy.data.scenes['TargetScene']
         bpy.context.window.scene = scene
-        bpy.ops.rigidbody.world_add()
 
-        ground = scene.objects['Plane.001']
-        bpy.context.view_layer.objects.active = ground
-
-        # This usage of 'object_add' will initialize a list of objects for the rigid body world
-        bpy.ops.rigidbody.object_add()
+        ground = scene.objects['Plane']
         ground.rigid_body.type = 'PASSIVE'
+        ground.rigid_body.collision_shape = 'CONVEX_HULL'
 
         scene.rigidbody_world.collection.objects.link(self.__brick_object)
-        self.__brick_object.rigid_body.collision_shape = 'BOX'
+        bpy.ops.object.origin_set(type='GEOMETRY_ORIGIN', center='MEDIAN')
+        self.__brick_object.rigid_body.collision_shape = 'CONVEX_HULL'
         self.__brick_object.rigid_body.type = 'ACTIVE'
 
 
@@ -135,15 +137,6 @@ if __name__ == "__main__":
     parser.add_argument("--scene", help="a path to the pattern scene", required=True)
     parser.add_argument("--samples", type=int, help="how many images to render", default=10)
     parser.add_argument("--shift", type=float, help="block shift per sample", default=-0.1)
-    parser.add_argument("--delta_x", type=float, default=0.0,
-                        help="degree by which to rotate the part after each sample in an X axis")
-    parser.add_argument("--delta_y", type=float, default=0.0,
-                        help="degree by which to rotate the part after each sample in a Y axis")
-    parser.add_argument("--delta_z", type=float, default=0.0,
-                        help="degree by which to rotate the part after each sample in a Z axis")
-    parser.add_argument("--rotation_x", type=float, default=0.0, help="starting rotation for an X axis")
-    parser.add_argument("--rotation_y", type=float, default=0.0, help="starting rotation for a Y axis")
-    parser.add_argument("--rotation_z", type=float, default=0.0, help="starting rotation for a Z axis")
 
     arguments = parser.parse_args(sys.argv[sys.argv.index("--") + 1:])
 
