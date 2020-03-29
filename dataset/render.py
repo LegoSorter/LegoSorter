@@ -3,8 +3,53 @@ import os
 import bpy
 import sys
 import math
-from random import random
+from random import random, choice
 
+lego_colours = {
+    'White': 0xffffff,
+    'Brick Yellow': 0xD9BB7B,
+    'Nougat': 0xD67240,
+    'Bright Red': 0xff0000,
+    'Bright Blue': 0x0000ff,
+    'Bright Yellow': 0xFfff00,
+    'Black': 0x000000,
+    'Dark Green': 0x009900,
+    'Bright Green': 0x00cc00,
+    'Dark Orange': 0xA83D15,
+    'Medium Blue': 0x478CC6,
+    'Bright Orange': 0xff6600,
+    'Bright Bluish Green': 0x059D9E,
+    'Bright Yellowish-Green': 0x95B90B,
+    'Bright Reddish Violet': 0x990066,
+    'Sand Blue': 0x5E748C,
+    'Sand Yellow': 0x8D7452,
+    'Earth Blue': 0x002541,
+    'Earth Green': 0x003300,
+    'Sand Green': 0x5F8265,
+    'Dark Red': 0x80081B,
+    'Flame Yellowish Orange': 0xF49B00,
+    'Reddish Brown': 0x5B1C0C,
+    'Medium Stone Grey': 0x9C9291,
+    'Dark Stone Grey': 0x4C5156,
+    'Light Stone Grey': 0xE4E4DA,
+    'Light Royal Blue': 0x87C0EA,
+    'Bright Purple': 0xDE378B,
+    'Light Purple': 0xEE9DC3,
+    'Cool Yellow': 0xFFFF99,
+    'Medium Lilac': 0x2C1577,
+    'Light Nougat': 0xF5C189,
+    'Dark Brown': 0x300F06,
+    'Medium Nougat': 0xAA7D55,
+    'Dark Azur': 0x469bc3,
+    'Medium Azur': 0x68c3e2,
+    'Aqua': 0xd3f2ea,
+    'Medium Lavender': 0xa06eb9,
+    'Lavender': 0xcda4de,
+    'White Glow': 0xf5f3d7,
+    'Spring Yellowish Green': 0xe2f99a,
+    'Olive Green': 0x77774E,
+    'Medium-Yellowish green': 0x96B93B
+}
 
 class SceneNotPreparedException(Exception):
     pass
@@ -55,13 +100,16 @@ class BrickRenderer:
         bpy.context.scene.camera.data.lens = 15
 
         bpy.context.scene.cycles.device = 'GPU'
-        # bpy.context.scene.render.engine = 'BLENDER_EEVEE'
         bpy.context.scene.render.engine = 'CYCLES'
+        bpy.context.scene.cycles.samples = 50
 
+        # apply a random colour to the brick
+        colour = get_random_colour()[1]
+        rgb_value = hex_to_rgb(colour)
+        bpy.data.materials["Material_4_c"].node_tree.nodes["Group"].inputs[0].default_value = rgb_value
+        # bpy.context.scene.render.engine = 'BLENDER_EEVEE'
         # bpy.context.scene.eevee.taa_render_samples = 256
         # bpy.context.scene.eevee.taa_samples = 64
-
-        bpy.context.scene.cycles.samples = 50
 
         # Skip animation
         for i in range(0, 100):
@@ -125,6 +173,26 @@ def set_object_position(obj, x=0.0, y=0.0, z=0.0):
 
 def degree_to_pi(degrees):
     return 2 * degrees / 360.0 * math.pi
+
+
+def srgb_to_linearrgb(c):
+    if c < 0:
+        return 0
+    elif c < 0.04045:
+        return c / 12.92
+    else:
+        return ((c + 0.055) / 1.055) ** 2.4
+
+
+def hex_to_rgb(h, alpha=1):
+    r = (h & 0xff0000) >> 16
+    g = (h & 0x00ff00) >> 8
+    b = (h & 0x0000ff)
+    return tuple([srgb_to_linearrgb(c / 0xff) for c in (r, g, b)] + [alpha])
+
+
+def get_random_colour():
+    return choice(list(lego_colours.items()))
 
 
 if __name__ == "__main__":
