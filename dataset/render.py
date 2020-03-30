@@ -17,39 +17,40 @@ lego_colours = {
     'Bright Green': 0x00cc00,
     'Dark Orange': 0xA83D15,
     'Medium Blue': 0x478CC6,
-    'Bright Orange': 0xff6600,
-    'Bright Bluish Green': 0x059D9E,
-    'Bright Yellowish-Green': 0x95B90B,
-    'Bright Reddish Violet': 0x990066,
-    'Sand Blue': 0x5E748C,
-    'Sand Yellow': 0x8D7452,
-    'Earth Blue': 0x002541,
-    'Earth Green': 0x003300,
-    'Sand Green': 0x5F8265,
-    'Dark Red': 0x80081B,
-    'Flame Yellowish Orange': 0xF49B00,
-    'Reddish Brown': 0x5B1C0C,
-    'Medium Stone Grey': 0x9C9291,
-    'Dark Stone Grey': 0x4C5156,
-    'Light Stone Grey': 0xE4E4DA,
-    'Light Royal Blue': 0x87C0EA,
-    'Bright Purple': 0xDE378B,
-    'Light Purple': 0xEE9DC3,
-    'Cool Yellow': 0xFFFF99,
-    'Medium Lilac': 0x2C1577,
-    'Light Nougat': 0xF5C189,
-    'Dark Brown': 0x300F06,
-    'Medium Nougat': 0xAA7D55,
-    'Dark Azur': 0x469bc3,
-    'Medium Azur': 0x68c3e2,
-    'Aqua': 0xd3f2ea,
-    'Medium Lavender': 0xa06eb9,
-    'Lavender': 0xcda4de,
-    'White Glow': 0xf5f3d7,
-    'Spring Yellowish Green': 0xe2f99a,
-    'Olive Green': 0x77774E,
-    'Medium-Yellowish green': 0x96B93B
+    # 'Bright Orange': 0xff6600,
+    # 'Bright Bluish Green': 0x059D9E,
+    # 'Bright Yellowish-Green': 0x95B90B,
+    # 'Bright Reddish Violet': 0x990066,
+    # 'Sand Blue': 0x5E748C,
+    # 'Sand Yellow': 0x8D7452,
+    # 'Earth Blue': 0x002541,
+    # 'Earth Green': 0x003300,
+    # 'Sand Green': 0x5F8265,
+    # 'Dark Red': 0x80081B,
+    # 'Flame Yellowish Orange': 0xF49B00,
+    # 'Reddish Brown': 0x5B1C0C,
+    # 'Medium Stone Grey': 0x9C9291,
+    # 'Dark Stone Grey': 0x4C5156,
+    # 'Light Stone Grey': 0xE4E4DA,
+    # 'Light Royal Blue': 0x87C0EA,
+    # 'Bright Purple': 0xDE378B,
+    # 'Light Purple': 0xEE9DC3,
+    # 'Cool Yellow': 0xFFFF99,
+    # 'Medium Lilac': 0x2C1577,
+    # 'Light Nougat': 0xF5C189,
+    # 'Dark Brown': 0x300F06,
+    # 'Medium Nougat': 0xAA7D55,
+    # 'Dark Azur': 0x469bc3,
+    # 'Medium Azur': 0x68c3e2,
+    # 'Aqua': 0xd3f2ea,
+    # 'Medium Lavender': 0xa06eb9,
+    # 'Lavender': 0xcda4de,
+    # 'White Glow': 0xf5f3d7,
+    # 'Spring Yellowish Green': 0xe2f99a,
+    # 'Olive Green': 0x77774E,
+    # 'Medium-Yellowish green': 0x96B93B
 }
+
 
 class SceneNotPreparedException(Exception):
     pass
@@ -101,7 +102,7 @@ class BrickRenderer:
 
         bpy.context.scene.cycles.device = 'GPU'
         bpy.context.scene.render.engine = 'CYCLES'
-        bpy.context.scene.cycles.samples = 50
+        bpy.context.scene.cycles.samples = 100
 
         # apply a random colour to the brick
         colour = get_random_colour()[1]
@@ -114,6 +115,8 @@ class BrickRenderer:
         # Skip animation
         for i in range(0, 100):
             bpy.context.scene.frame_set(i)
+
+        self.adjust_world_to_location(self.__brick_object.matrix_world.to_translation())
 
         for i in range(samples_count):
             bpy.context.scene.render.filepath = os.path.join(self.output_path, "{:s}_{:d}.png".format(part_name, i))
@@ -134,9 +137,15 @@ class BrickRenderer:
         ground.rigid_body.collision_shape = 'CONVEX_HULL'
 
         scene.rigidbody_world.collection.objects.link(self.__brick_object)
-        bpy.ops.object.origin_set(type='GEOMETRY_ORIGIN', center='MEDIAN')
+        bpy.ops.object.origin_set(type='ORIGIN_CENTER_OF_VOLUME', center='MEDIAN')
         self.__brick_object.rigid_body.collision_shape = 'CONVEX_HULL'
         self.__brick_object.rigid_body.type = 'ACTIVE'
+
+    def adjust_world_to_location(self, location_zero):
+        location_zero[2] = 0
+        for o in bpy.data.objects:
+            if o.name != self.__brick_object.name:
+                o.location += location_zero
 
 
 def main(args):
