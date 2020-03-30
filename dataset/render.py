@@ -6,16 +6,16 @@ import math
 from random import random, choice
 
 lego_colours = {
-    'White': 0xffffff,
-    'Brick Yellow': 0xD9BB7B,
-    'Nougat': 0xD67240,
-    'Bright Red': 0xff0000,
-    'Bright Blue': 0x0000ff,
-    'Bright Yellow': 0xFfff00,
-    'Black': 0x000000,
-    'Dark Green': 0x009900,
-    'Bright Green': 0x00cc00,
-    'Dark Orange': 0xA83D15,
+    # 'White': 0xffffff,
+    # 'Brick Yellow': 0xD9BB7B,
+    # 'Nougat': 0xD67240,
+    # 'Bright Red': 0xff0000,
+    # 'Bright Blue': 0x0000ff,
+    # 'Bright Yellow': 0xFfff00,
+    # 'Black': 0x000000,
+    # 'Dark Green': 0x009900,
+    # 'Bright Green': 0x00cc00,
+    # 'Dark Orange': 0xA83D15,
     'Medium Blue': 0x478CC6,
     # 'Bright Orange': 0xff6600,
     # 'Bright Bluish Green': 0x059D9E,
@@ -112,6 +112,7 @@ class BrickRenderer:
         # bpy.context.scene.eevee.taa_render_samples = 256
         # bpy.context.scene.eevee.taa_samples = 64
 
+        self.force_cuda()
         # Skip animation
         for i in range(0, 100):
             bpy.context.scene.frame_set(i)
@@ -146,6 +147,22 @@ class BrickRenderer:
         for o in bpy.data.objects:
             if o.name != self.__brick_object.name:
                 o.location += location_zero
+
+    @staticmethod
+    def force_cuda():
+        preferences = bpy.context.preferences
+        cycles_preferences = preferences.addons['cycles'].preferences
+        cycles_preferences.compute_device_type = 'CUDA'
+
+        print("Device type preference is {}".format(cycles_preferences.compute_device_type))
+
+        cycles_preferences.get_devices()
+
+        for device in cycles_preferences.devices:
+            print("Available device: {}".format(device['id']))
+            # TODO: Set only one active device for each blender process
+            device.use = True
+        pass
 
 
 def main(args):
