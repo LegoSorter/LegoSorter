@@ -78,7 +78,7 @@ class BrickRenderer:
                                          importCameras=False, positionCamera=False, addEnvironment=False)
         self.__brick_object = [x for x in bpy.data.objects if os.path.basename(self.__part_path) in x.name][0]
 
-        set_object_position(self.__brick_object, 0, 0, 1.5 * self.__brick_object.location.z)
+        set_object_position(self.__brick_object, 0, 0, 2 + 1.5 * self.__brick_object.location.z)
         set_object_rotation(self.__brick_object, random() * 360, random() * 360, random() * 360)
 
     def prepare_scene(self):
