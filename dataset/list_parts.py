@@ -38,7 +38,8 @@ if __name__ == "__main__":
                     elif file_name_no_ext[0].isalpha():
                         s = re.split('([a-zA-Z]+[0-9]*)', file_name_no_ext)
                         base_file_name = s[1]
-                    if not any(part["base_file_name"] == base_file_name for part in part_list["parts"]):
+                    if 'sticker' not in part_name.split()[0].lower() and\
+                            not any(part["base_file_name"] == base_file_name for part in part_list["parts"]):
                         part = {"part_name": part_name, "base_file_name": base_file_name, "file_name": file_name}
                         part_list["parts"].append(part)
                         count += 1
