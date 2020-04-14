@@ -4,6 +4,7 @@ import bpy
 import sys
 import math
 from random import random, choice
+from datetime import datetime
 
 lego_colours = {
     # 'White': 0xffffff,
@@ -105,8 +106,8 @@ class BrickRenderer:
         bpy.context.scene.cycles.samples = 100
 
         # apply a random colour to the brick
-        colour = get_random_colour()[1]
-        rgb_value = hex_to_rgb(colour)
+        colour = get_random_colour()
+        rgb_value = hex_to_rgb(colour[1])
         bpy.data.materials["Material_4_c"].node_tree.nodes["Group"].inputs[0].default_value = rgb_value
         # bpy.context.scene.render.engine = 'BLENDER_EEVEE'
         # bpy.context.scene.eevee.taa_render_samples = 256
@@ -120,7 +121,8 @@ class BrickRenderer:
         self.adjust_world_to_location(self.__brick_object.matrix_world.to_translation())
 
         for i in range(samples_count):
-            bpy.context.scene.render.filepath = os.path.join(self.output_path, "{:s}_{:d}.png".format(part_name, i))
+            filename = "{:s}_{:s}_{:d}_{:d}.png".format(part_name, colour[0], i, int(datetime.now().timestamp()))
+            bpy.context.scene.render.filepath = os.path.join(self.output_path, filename)
             print("------------------------------------------")
             print("Rendering {} of {}".format(i, samples_count))
             print("------------------------------------------")
