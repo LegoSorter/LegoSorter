@@ -58,13 +58,14 @@ class SceneNotPreparedException(Exception):
 
 
 class BrickRenderer:
-    def __init__(self, part_path, ldraw_path, pattern_scene_path, resolution, output_path):
+    def __init__(self, part_path, ldraw_path, pattern_scene_path, resolution, output_path, gpu_id):
         self.__part_path = part_path
         self.__ldraw_path = ldraw_path
         self.resolution = resolution
         self.__pattern_scene_path = pattern_scene_path
         self.__brick_object = None
         self.output_path = output_path
+        self.gpu_id = gpu_id
 
     def load_pattern_scene(self):
         bpy.ops.wm.open_mainfile(filepath=self.__pattern_scene_path)
@@ -150,8 +151,7 @@ class BrickRenderer:
             if o.name != self.__brick_object.name:
                 o.location += location_zero
 
-    @staticmethod
-    def force_cuda():
+    def force_cuda(self):
         preferences = bpy.context.preferences
         cycles_preferences = preferences.addons['cycles'].preferences
         cycles_preferences.compute_device_type = 'CUDA'
@@ -162,14 +162,17 @@ class BrickRenderer:
 
         for device in cycles_preferences.devices:
             print("Available device: {}".format(device['id']))
-            # TODO: Set only one active device for each blender process
-            device.use = True
+            if not self.gpu_id or device[id] == self.gpu_id:
+                device.use = True
+                print("{} set as the active device".format(device['id']))
+            else:
+                device.use = False
         pass
 
 
 def main(args):
     brickRender = BrickRenderer(args.part, args.ldraw, args.scene, (args.width, args.height),
-                                args.output_dir)
+                                args.output_dir, args.gpu)
     brickRender.prepare_scene()
     brickRender.render(samples_count=args.samples, transformation=shift_horizontally, shift=args.shift)
 
@@ -203,7 +206,7 @@ def degree_to_pi(degrees):
     return 2 * degrees / 360.0 * math.pi
 
 
-def srgb_to_linearrgb(c):
+def srgb_to_linear_rgb(c):
     if c < 0:
         return 0
     elif c < 0.04045:
@@ -216,7 +219,7 @@ def hex_to_rgb(h, alpha=1):
     r = (h & 0xff0000) >> 16
     g = (h & 0x00ff00) >> 8
     b = (h & 0x0000ff)
-    return tuple([srgb_to_linearrgb(c / 0xff) for c in (r, g, b)] + [alpha])
+    return tuple([srgb_to_linear_rgb(c / 0xff) for c in (r, g, b)] + [alpha])
 
 
 def get_random_colour():
@@ -233,6 +236,8 @@ if __name__ == "__main__":
     parser.add_argument("--scene", help="a path to the pattern scene", required=True)
     parser.add_argument("--samples", type=int, help="how many images to render", default=10)
     parser.add_argument("--shift", type=float, help="block shift per sample", default=-0.1)
+    parser.add_argument("--gpu", type=str, help="identifier of GPU which will be used for rendering"
+                                                "if not specified, every available device will be used", required=False)
 
     arguments = parser.parse_args(sys.argv[sys.argv.index("--") + 1:])
 
