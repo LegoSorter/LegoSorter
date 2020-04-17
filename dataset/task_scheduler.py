@@ -4,21 +4,35 @@ import logging
 import time
 
 
+class Task:
+    def __init__(self, id):
+        # put blender task params here
+        import numpy
+        self.id = id
+        self.wait_time = numpy.random.randint(1, 3)
+
+    def run(self, gpu):
+        # put blender render here
+        time.sleep(self.wait_time)
+
+    def __str__(self):
+        return str(self.id)
+
+
 def worker(task, gpu, stats):
     """
      This function contains code that is executed by every thread.
     """
+    # start time measurement
     start = time.time()
 
-    # worker logic begin
-    # add blender execution command here
-    import numpy
-    time.sleep(numpy.random.randint(1, 4))
-    logging.debug(f'[WORKER] TASK FINISHED: {task} on {gpu}')
-    # worker logic end
+    # run task
+    task.run(gpu)
 
+    # measure time and put it into stats
     end = time.time()
     stats.put((gpu, (start, end)))
+    logging.debug(f'[WORKER] TASK FINISHED: {task} on {gpu}')
 
 
 def select_gpu(gpu_tasks):
@@ -60,21 +74,17 @@ def select_gpu(gpu_tasks):
     return selected_gpu
 
 
-def run_queue(q):
+def run_queue(q, gpus):
     """
      This function dispatches tasks from queue to GPUs.
     """
-    # TODO: detect gpus
-    gpu_tasks = {
-        "GPU0": None,
-        "GPU1": None,
-        "GPU2": None,
-        "GPU3": None,
-        "GPU4": None,
-        "GPU5": None,
-        "GPU6": None,
-        "GPU7": None,
-    }
+    gpu_tasks = {gpu: None for gpu in gpus}
+    # target dictionary:
+    # gpu_tasks = {
+    #     "GPU0": None,
+    #     "GPU1": None
+    # }
+
     # initialize a thread-safe queue for writing statistics
     stat_queue = queue.Queue()
 
@@ -153,12 +163,18 @@ if __name__ == "__main__":
 
     # create a task queue
     task_queue = queue.Queue()
-    # fill task queue with 50 placeholders
-    for i in range(50):
-        task_queue.put(str(i))
+
+    # fill task queue with 50 tasks
+    for i in range(20):
+        task = Task(i)
+        task_queue.put(task)
+
+    # define gpus
+	# TODO: detect gpus
+    gpus = ['GPU0', 'GPU1', 'GPU2', 'GPU3']
 
     # run task queue
-    stats = run_queue(task_queue)
+    stats = run_queue(task_queue, gpus)
 
     # plot run statistics
     plot_stats(stats)
