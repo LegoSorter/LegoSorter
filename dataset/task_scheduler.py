@@ -115,6 +115,8 @@ def plot_stats(q):
     """
      This function plots statistics from run_queue(q) return value.
     """
+    import matplotlib
+    matplotlib.use('Agg')  # for ssh
     import matplotlib.pyplot as plt
     import numpy as np
     import datetime
