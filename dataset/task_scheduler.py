@@ -150,7 +150,8 @@ def plot_stats(q):
     ax.grid(color='gray', linestyle='--', linewidth=0.5, axis='x')
     ax.set_xlabel('Time (HH-MM-SS)')
     ax.set_title('GPU utilization')
-    plt.show()
+    #   plt.show()
+    plt.savefig('exec_stats.png', dpi=300)
 
 
 if __name__ == "__main__":
@@ -170,7 +171,7 @@ if __name__ == "__main__":
         task_queue.put(task)
 
     # define gpus
-	# TODO: detect gpus
+    # TODO: detect gpus
     gpus = ['GPU0', 'GPU1', 'GPU2', 'GPU3']
 
     # run task queue
