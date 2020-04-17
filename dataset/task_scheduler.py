@@ -1,22 +1,36 @@
-import threading
+# import threading
 import queue
 import logging
 import time
+import subprocess
 
 
 class Task:
     def __init__(self, id):
         # put blender task params here
-        import numpy
         self.id = id
-        self.wait_time = numpy.random.randint(1, 3)
+        self.width = 400
+        self.height = 400
+        self.samples = 6
+        self.selected_gpu = "None"
+
+    def get_command(self):
+        part_file = '$LEGO_HOME/dataset/ldraw/parts/{}.dat'.format(self.id)
+        out_dir = '$LEGO_HOME/dataset/render'
+        ldraw_dir = '$LEGO_HOME/dataset/ldraw'
+        scene = '$LEGO_HOME/dataset/scenes/simple.blend'
+        log_file = '$LEGO_HOME/dataset/logs/{}.log'.format(self.id)
+        command = 'blender --background --addons importldraw --python render.py -- --scene "{}" --width {} --height {} --part "{}" --output_dir "{}" --ldraw "{}" --gpu "{}" > {} 2>&1'.format(
+            scene, self.width, self.height, part_file, out_dir, ldraw_dir, self.selected_gpu, log_file)
+        return command
 
     def run(self, gpu):
         # put blender render here
-        time.sleep(self.wait_time)
+        self.selected_gpu = gpu
+        subprocess.call(self.get_command(), shell=True)
 
     def __str__(self):
-        return str(self.id)
+        return str(self.get_command())
 
 
 def worker(task, gpu, stats):
@@ -32,7 +46,7 @@ def worker(task, gpu, stats):
     # measure time and put it into stats
     end = time.time()
     stats.put((gpu, (start, end)))
-    logging.debug(f'[WORKER] TASK FINISHED: {task} on {gpu}')
+    logging.debug('[WORKER] TASK FINISHED: {} on {}'.format(task, gpu))
 
 
 def select_gpu(gpu_tasks):
@@ -53,20 +67,20 @@ def select_gpu(gpu_tasks):
             if isinstance(task, threading.Thread):
                 # GPU has finished its task, we select it and break
                 if not task.is_alive():
-                    logging.debug(f'[SELECT_GPU] {gpu} has finished its task. Selecting it.')
+                    logging.debug('[SELECT_GPU] {} has finished its task. Selecting it.'.format(gpu))
                     gpu_tasks[gpu] = None
                     selected_gpu = gpu
                     break
 
             # if GPU is available, we select it and break
             elif isinstance(task, type(None)):
-                logging.debug(f'[SELECT_GPU] {gpu} has no tasks. Selecting it.')
+                logging.debug('[SELECT_GPU] {} has no tasks. Selecting it.'.format(gpu))
                 selected_gpu = gpu
                 break
 
             # task should be only threading.Thread or None
             else:
-                raise TypeError(f'Task on {gpu} is of invalid type: {str(type(task))}')
+                raise TypeError('Task on {} is of invalid type: {}'.format(gpu, str(type(task))))
 
         if None in gpu_tasks.values():
             break
@@ -78,6 +92,7 @@ def run_queue(q, gpus):
     """
      This function dispatches tasks from queue to GPUs.
     """
+    start = time.time()
     gpu_tasks = {gpu: None for gpu in gpus}
     # target dictionary:
     # gpu_tasks = {
@@ -89,7 +104,7 @@ def run_queue(q, gpus):
     stat_queue = queue.Queue()
 
     while not q.empty():
-        logging.info(f'Tasks left: {q.qsize()}')
+        logging.info('Tasks left: {}'.format(q.qsize()))
 
         # get task from queue
         q_top = q.get()
@@ -102,12 +117,14 @@ def run_queue(q, gpus):
         gpu_tasks[selected_gpu] = thread
         thread.start()
 
-        logging.info(f'[OK] Task {q_top} enqueued on {selected_gpu}')
+        logging.info('[OK] Task {} enqueued on {}'.format(q.qsize(), selected_gpu))
 
     # sync remaining threads
     for thread in gpu_tasks.values():
-        thread.join()
-    logging.info('All tasks have finished.')
+        if isinstance(task, threading.Thread):
+            thread.join()
+    end = time.time()
+    logging.info('All tasks have finished. Time elapsed: {} s'.format(end - start))
     return stat_queue
 
 
@@ -144,7 +161,7 @@ def plot_stats(q):
 
     # THIS IS A MESS
     formatter = FuncFormatter(
-        lambda x_val, tick_pos: f'{datetime.datetime.utcfromtimestamp(x_val).strftime("%H:%M:%S")}')
+        lambda x_val, tick_pos: '{}'.format(datetime.datetime.utcfromtimestamp(x_val).strftime("%H:%M:%S")))
     ax.xaxis.set_major_formatter(formatter)
     ax.set_yticks(y_pos)
     ax.set_yticklabels(gpus)
@@ -174,7 +191,7 @@ if __name__ == "__main__":
 
     # define gpus
     # TODO: detect gpus
-    gpus = ['GPU0', 'GPU1', 'GPU2', 'GPU3']
+    gpus = ['CUDA_Tesla K20m_0000:05:00', 'CUDA_Tesla K20m_0000:42:00']
 
     # run task queue
     stats = run_queue(task_queue, gpus)
