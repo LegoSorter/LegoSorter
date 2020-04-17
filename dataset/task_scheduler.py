@@ -31,7 +31,8 @@ class Task:
         subprocess.call(self.get_command(), shell=True)  # TODO: change to subprocess.run with newer python
 
     def __str__(self):
-        return str(self.get_command())
+        return str('Render {}.dat, {}x{}, {} samples, {} shift'.format(self.id, self.width, self.height, self.samples,
+                                                                       self.shift))
 
 
 def worker(task, gpu, stats):
