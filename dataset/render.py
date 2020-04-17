@@ -162,7 +162,7 @@ class BrickRenderer:
 
         for device in cycles_preferences.devices:
             print("Available device: {}".format(device['id']))
-            if not self.gpu_id or device[id] == self.gpu_id:
+            if not self.gpu_id or device['id'] == self.gpu_id:
                 device.use = True
                 print("{} set as the active device".format(device['id']))
             else:
