@@ -1,4 +1,4 @@
-# import threading
+import threading
 import queue
 import logging
 import time
@@ -12,6 +12,7 @@ class Task:
         self.width = 400
         self.height = 400
         self.samples = 6
+        self.shift = 0.6
         self.selected_gpu = "None"
 
     def get_command(self):
@@ -20,14 +21,14 @@ class Task:
         ldraw_dir = '$LEGO_HOME/dataset/ldraw'
         scene = '$LEGO_HOME/dataset/scenes/simple.blend'
         log_file = '$LEGO_HOME/dataset/logs/{}.log'.format(self.id)
-        command = 'blender --background --addons importldraw --python render.py -- --scene "{}" --width {} --height {} --part "{}" --output_dir "{}" --ldraw "{}" --gpu "{}" > {} 2>&1'.format(
-            scene, self.width, self.height, part_file, out_dir, ldraw_dir, self.selected_gpu, log_file)
+        command = 'blender --background --addons importldraw --python render.py -- --scene "{}" --width {} --height {} --shift {} --part "{}" --output_dir "{}" --ldraw "{}" --gpu "{}" > {} 2>&1'.format(
+            scene, self.width, self.height, self.shift, part_file, out_dir, ldraw_dir, self.selected_gpu, log_file)
         return command
 
     def run(self, gpu):
-        # put blender render here
+        # blender render runs here
         self.selected_gpu = gpu
-        subprocess.call(self.get_command(), shell=True)
+        subprocess.call(self.get_command(), shell=True)  # TODO: change to subprocess.run with newer python
 
     def __str__(self):
         return str(self.get_command())
@@ -49,40 +50,40 @@ def worker(task, gpu, stats):
     logging.debug('[WORKER] TASK FINISHED: {} on {}'.format(task, gpu))
 
 
-def select_gpu(gpu_tasks):
+def select_gpu(gpu_threads):
     """
      This function chooses the first available GPU in the system.
      If all GPUs are busy, it polls all active threads and takes
      the GPU after encountering first finished thread.
     """
-    if not None in gpu_tasks.values():
+    if not None in gpu_threads.values():
         logging.debug('[SELECT_GPU] No gpu available! Starting polling...')
 
     # poll gpus for availability until any is available
     selected_gpu = ''
-    while True:  # break if None in gpu_tasks.values()
+    while True:  # break if None in gpu_threads.values()
         # go through each gpu_tasks item and check the status of enqueued task
-        for gpu, task in gpu_tasks.items():
-            # if GPU has an ongoing or finished task, we check it
-            if isinstance(task, threading.Thread):
+        for gpu, thread in gpu_threads.items():
+            # if GPU has a thread, we check it
+            if isinstance(thread, threading.Thread):
                 # GPU has finished its task, we select it and break
-                if not task.is_alive():
+                if not thread.is_alive():
                     logging.debug('[SELECT_GPU] {} has finished its task. Selecting it.'.format(gpu))
-                    gpu_tasks[gpu] = None
+                    gpu_threads[gpu] = None
                     selected_gpu = gpu
                     break
 
             # if GPU is available, we select it and break
-            elif isinstance(task, type(None)):
+            elif isinstance(thread, type(None)):
                 logging.debug('[SELECT_GPU] {} has no tasks. Selecting it.'.format(gpu))
                 selected_gpu = gpu
                 break
 
-            # task should be only threading.Thread or None
+            # thread should be only threading.Thread or None
             else:
-                raise TypeError('Task on {} is of invalid type: {}'.format(gpu, str(type(task))))
+                raise TypeError('Task on {} is of invalid type: {}'.format(gpu, str(type(thread))))
 
-        if None in gpu_tasks.values():
+        if None in gpu_threads.values():
             break
 
     return selected_gpu
@@ -93,9 +94,9 @@ def run_queue(q, gpus):
      This function dispatches tasks from queue to GPUs.
     """
     start = time.time()
-    gpu_tasks = {gpu: None for gpu in gpus}
+    gpu_threads = {gpu: None for gpu in gpus}
     # target dictionary:
-    # gpu_tasks = {
+    # gpu_threads = {
     #     "GPU0": None,
     #     "GPU1": None
     # }
@@ -104,25 +105,28 @@ def run_queue(q, gpus):
     stat_queue = queue.Queue()
 
     while not q.empty():
-        logging.info('Tasks left: {}'.format(q.qsize()))
+        logging.info('Tasks left in queue: {}'.format(q.qsize()))
 
         # get task from queue
-        q_top = q.get()
+        top_task = q.get()
 
         # selecting gpu
-        selected_gpu = select_gpu(gpu_tasks)
+        selected_gpu = select_gpu(gpu_threads)
 
         # starting thread
-        thread = threading.Thread(target=worker, args=(q_top, selected_gpu, stat_queue))
-        gpu_tasks[selected_gpu] = thread
+        thread = threading.Thread(target=worker, args=(top_task, selected_gpu, stat_queue))
+        gpu_threads[selected_gpu] = thread
         thread.start()
 
-        logging.info('[OK] Task {} enqueued on {}'.format(q.qsize(), selected_gpu))
+        logging.info('[OK] Task {} enqueued on {}'.format(task, selected_gpu))
 
+    logging.info('All tasks have been dispatched, waiting for completion...')
     # sync remaining threads
-    for thread in gpu_tasks.values():
-        if isinstance(task, threading.Thread):
-            thread.join()
+    while True:
+        if not any(isinstance(t, threading.Thread) and t.is_alive() for t in gpu_threads.values()):
+            break
+        #    thread.join() doesnt work for some reason on python 3.4
+
     end = time.time()
     logging.info('All tasks have finished. Time elapsed: {} s'.format(end - start))
     return stat_queue
@@ -185,7 +189,7 @@ if __name__ == "__main__":
     task_queue = queue.Queue()
 
     # fill task queue with 50 tasks
-    for i in range(20):
+    for i in range(1, 11):
         task = Task(i)
         task_queue.put(task)
 
