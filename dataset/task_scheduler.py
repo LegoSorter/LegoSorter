@@ -119,7 +119,7 @@ def run_queue(q, gpus):
         gpu_threads[selected_gpu] = thread
         thread.start()
 
-        logging.info('[OK] Task {} enqueued on {}'.format(task, selected_gpu))
+        logging.info('[OK] Task "{}" enqueued on {}'.format(task, selected_gpu))
 
     logging.info('All tasks have been dispatched, waiting for completion...')
     # sync remaining threads
