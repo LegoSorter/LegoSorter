@@ -4,7 +4,7 @@ import logging
 import time
 import subprocess
 import json
-
+import os
 
 class Task:
     def __init__(self, id):
@@ -15,19 +15,30 @@ class Task:
         self.samples = 6
         self.shift = 0.6
         self.selected_gpu = "None"
+        self.part_file = '$LEGO_HOME/dataset/ldraw/parts/{}.dat'.format(self.id)
+        self.out_dir = '$LEGO_HOME/dataset/render/{}'.format(self.id)
+        self.ldraw_dir = '$LEGO_HOME/dataset/ldraw'
+        self.scene = '$LEGO_HOME/dataset/scenes/simple.blend'
+        self.log_dir = '$LEGO_HOME/dataset/logs'
+        self.log_file = '{}/{}.log'.format(self.log_dir, self.id)
+        self.make_dir(self.out_dir)
+        self.make_dir(self.log_dir)
+
+    def make_dir(self, path):
+        try:
+            os.makedirs(path)
+        except FileExistsError:
+            pass 
 
     def get_command(self):
-        part_file = '$LEGO_HOME/dataset/ldraw/parts/{}.dat'.format(self.id)
-        out_dir = '$LEGO_HOME/dataset/render'
-        ldraw_dir = '$LEGO_HOME/dataset/ldraw'
-        scene = '$LEGO_HOME/dataset/scenes/simple.blend'
-        log_file = '$LEGO_HOME/dataset/logs/{}.log'.format(self.id)
         command = 'blender --background --addons importldraw --python render.py -- --scene "{}" --width {} --height {} --shift {} --part "{}" --output_dir "{}" --ldraw "{}" --gpu "{}" > {} 2>&1'.format(
-            scene, self.width, self.height, self.shift, part_file, out_dir, ldraw_dir, self.selected_gpu, log_file)
+            self.scene, self.width, self.height, self.shift, self.part_file, self.out_dir, self.ldraw_dir, self.selected_gpu, self.log_file)
         return command
 
     def run(self, gpu):
         # blender render runs here
+        if gpu[:3] == 'CPU':
+           selected_gpu = 'CPU'
         self.selected_gpu = gpu
         subprocess.call(self.get_command(), shell=True)  # TODO: change to subprocess.run with newer python
 
@@ -202,10 +213,13 @@ if __name__ == "__main__":
 
     # define gpus
     # TODO: detect gpus
+    cpu_count = 4 
     gpus = ['CUDA_Tesla K20m_0000:05:00', 'CUDA_Tesla K20m_0000:42:00']
+    cpus = ['CPU' + str(i) for i in range(cpu_count)]
+    devices = gpus + cpus
 
     # run task queue
-    stats = run_queue(task_queue, gpus)
+    stats = run_queue(task_queue, devices)
 
     # plot run statistics
     plot_stats(stats)
