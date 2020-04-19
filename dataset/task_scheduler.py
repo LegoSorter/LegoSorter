@@ -3,6 +3,7 @@ import queue
 import logging
 import time
 import subprocess
+import json
 
 
 class Task:
@@ -189,9 +190,14 @@ if __name__ == "__main__":
     # create a task queue
     task_queue = queue.Queue()
 
-    # fill task queue with 50 tasks
-    for i in range(1, 11):
-        task = Task(i)
+    # read lego parts from file - it's the output of 'list_parts.py' script
+    # TODO make the file name as argument
+    with open('parts.json', 'r') as file:
+        parts_dict = json.load(file)
+
+    # fill task queue with tasks
+    for part in parts_dict["parts"]:
+        task = Task(part['file_name'].split(".")[0])
         task_queue.put(task)
 
     # define gpus
