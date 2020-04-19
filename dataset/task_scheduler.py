@@ -12,7 +12,7 @@ class Task:
         self.id = id
         self.width = 400
         self.height = 400
-        self.samples = 6
+        self.samples = 10
         self.shift = 0.6
         self.selected_gpu = "None"
         self.part_file = '$LEGO_HOME/dataset/ldraw/parts/{}.dat'.format(self.id)
@@ -31,8 +31,8 @@ class Task:
             pass 
 
     def get_command(self):
-        command = 'blender --background --addons importldraw --python render.py -- --scene "{}" --width {} --height {} --shift {} --part "{}" --output_dir "{}" --ldraw "{}" --gpu "{}" > {} 2>&1'.format(
-            self.scene, self.width, self.height, self.shift, self.part_file, self.out_dir, self.ldraw_dir, self.selected_gpu, self.log_file)
+        command = 'blender --background --addons importldraw --python render.py -- --scene "{}" --width {} --height {} --shift {} --samples {} --part "{}" --output_dir "{}" --ldraw "{}" --gpu "{}" > {} 2>&1'.format(
+            self.scene, self.width, self.height, self.shift, self.samples, self.part_file, self.out_dir, self.ldraw_dir, self.selected_gpu, self.log_file)
         return command
 
     def run(self, gpu):
