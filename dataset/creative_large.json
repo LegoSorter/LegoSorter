@@ -1,0 +1,509 @@
+{
+  "parts": [
+    {
+      "part_name": "Brick  1 x  2 with Two Studs on One Side",
+      "base_file_name": "11211",
+      "file_name": "11211.dat"
+    },
+    {
+      "part_name": "Plate  1 x  2 with Groove with 1 Centre Stud, without Understud",
+      "base_file_name": "15573",
+      "file_name": "15573.dat"
+    },
+    {
+      "part_name": "Plate  2 x  2 Corner",
+      "base_file_name": "2420",
+      "file_name": "2420.dat"
+    },
+    {
+      "part_name": "Tile  1 x  4 with Groove",
+      "base_file_name": "2431",
+      "file_name": "2431.dat"
+    },
+    {
+      "part_name": "Tile  1 x  2 with Handle",
+      "base_file_name": "2432",
+      "file_name": "2432.dat"
+    },
+    {
+      "part_name": "Plate  2 x 12",
+      "base_file_name": "2445",
+      "file_name": "2445.dat"
+    },
+    {
+      "part_name": "Brick  2 x  6",
+      "base_file_name": "2456",
+      "file_name": "2456.dat"
+    },
+    {
+      "part_name": "Brick  1 x  2 with Grille",
+      "base_file_name": "2877",
+      "file_name": "2877.dat"
+    },
+    {
+      "part_name": "Brick  1 x  1 with Handle",
+      "base_file_name": "2921",
+      "file_name": "2921.dat"
+    },
+    {
+      "part_name": "Plate  1 x  4 with 2 Wheel Pins",
+      "base_file_name": "2926",
+      "file_name": "2926.dat"
+    },
+    {
+      "part_name": "Brick  2 x  4",
+      "base_file_name": "3001",
+      "file_name": "3001.dat"
+    },
+    {
+      "part_name": "Brick  2 x  3",
+      "base_file_name": "3002",
+      "file_name": "3002.dat"
+    },
+    {
+      "part_name": "Brick  2 x  2",
+      "base_file_name": "3003",
+      "file_name": "3003.dat"
+    },
+    {
+      "part_name": "Brick  1 x  2",
+      "base_file_name": "3004",
+      "file_name": "3004.dat"
+    },
+    {
+      "part_name": "Brick  1 x  1",
+      "base_file_name": "3005",
+      "file_name": "3005.dat"
+    },
+    {
+      "part_name": "Brick  2 x 10",
+      "base_file_name": "3006",
+      "file_name": "3006.dat"
+    },
+    {
+      "part_name": "Brick  2 x  8",
+      "base_file_name": "3007",
+      "file_name": "3007.dat"
+    },
+    {
+      "part_name": "Brick  1 x  8",
+      "base_file_name": "3008",
+      "file_name": "3008.dat"
+    },
+    {
+      "part_name": "Brick  1 x  6",
+      "base_file_name": "3009",
+      "file_name": "3009.dat"
+    },
+    {
+      "part_name": "Brick  1 x  4",
+      "base_file_name": "3010",
+      "file_name": "3010.dat"
+    },
+    {
+      "part_name": "Brick  1 x  2 Log",
+      "base_file_name": "30136",
+      "file_name": "30136.dat"
+    },
+    {
+      "part_name": "Brick  2 x  2 x  3",
+      "base_file_name": "30145",
+      "file_name": "30145.dat"
+    },
+    {
+      "part_name": "Plate  2 x  4 with Pins",
+      "base_file_name": "30157",
+      "file_name": "30157.dat"
+    },
+    {
+      "part_name": "Plate  2 x  4",
+      "base_file_name": "3020",
+      "file_name": "3020.dat"
+    },
+    {
+      "part_name": "Plate  2 x  3",
+      "base_file_name": "3021",
+      "file_name": "3021.dat"
+    },
+    {
+      "part_name": "Plate  2 x  2",
+      "base_file_name": "3022",
+      "file_name": "3022.dat"
+    },
+    {
+      "part_name": "Plate  1 x  2",
+      "base_file_name": "3023",
+      "file_name": "3023.dat"
+    },
+    {
+      "part_name": "Plate  6 x 12",
+      "base_file_name": "3028",
+      "file_name": "3028.dat"
+    },
+    {
+      "part_name": "Plate  4 x  4",
+      "base_file_name": "3031",
+      "file_name": "3031.dat"
+    },
+    {
+      "part_name": "Plate  4 x  6",
+      "base_file_name": "3032",
+      "file_name": "3032.dat"
+    },
+    {
+      "part_name": "Plate  2 x  8",
+      "base_file_name": "3034",
+      "file_name": "3034.dat"
+    },
+    {
+      "part_name": "Plate  4 x  8",
+      "base_file_name": "3035",
+      "file_name": "3035.dat"
+    },
+    {
+      "part_name": "Slope Brick 45  2 x  4",
+      "base_file_name": "3037",
+      "file_name": "3037.dat"
+    },
+    {
+      "part_name": "Bar  4L Lightsaber Blade",
+      "base_file_name": "30374",
+      "file_name": "30374.dat"
+    },
+    {
+      "part_name": "Hinge Brick  1 x  6 Locking Double",
+      "base_file_name": "30388",
+      "file_name": "30388.dat"
+    },
+    {
+      "part_name": "Slope Brick 45  2 x  2",
+      "base_file_name": "3039",
+      "file_name": "3039.dat"
+    },
+    {
+      "part_name": "Hook with Towball",
+      "base_file_name": "30395",
+      "file_name": "30395.dat"
+    },
+    {
+      "part_name": "Hinge  1 x  2 Locking with Towball Socket",
+      "base_file_name": "30396",
+      "file_name": "30396.dat"
+    },
+    {
+      "part_name": "Slope Brick 45  2 x  1 without Centre Stud",
+      "base_file_name": "3040",
+      "file_name": "3040a.dat"
+    },
+    {
+      "part_name": "Brick  1 x  4 with Studs on Side",
+      "base_file_name": "30414",
+      "file_name": "30414.dat"
+    },
+    {
+      "part_name": "Brick  1 x  2 without Centre Stud",
+      "base_file_name": "3065",
+      "file_name": "3065.dat"
+    },
+    {
+      "part_name": "Brick  1 x  4 without Centre Studs",
+      "base_file_name": "3066",
+      "file_name": "3066.dat"
+    },
+    {
+      "part_name": "Slope Brick 33  3 x  2",
+      "base_file_name": "3298",
+      "file_name": "3298.dat"
+    },
+    {
+      "part_name": "Plate  1 x  1 Round with Tabs",
+      "base_file_name": "33291",
+      "file_name": "33291.dat"
+    },
+    {
+      "part_name": "Plate  1 x  8",
+      "base_file_name": "3460",
+      "file_name": "3460.dat"
+    },
+    {
+      "part_name": "Brick  1 x  3",
+      "base_file_name": "3622",
+      "file_name": "3622.dat"
+    },
+    {
+      "part_name": "Plate  1 x  3",
+      "base_file_name": "3623",
+      "file_name": "3623.dat"
+    },
+    {
+      "part_name": "Arch  1 x  4",
+      "base_file_name": "3659",
+      "file_name": "3659.dat"
+    },
+    {
+      "part_name": "Slope Brick 45  2 x  2 Inverted",
+      "base_file_name": "3660",
+      "file_name": "3660.dat"
+    },
+    {
+      "part_name": "Slope Brick 45  2 x  1 Inverted without Inner Stopper Ring",
+      "base_file_name": "3665",
+      "file_name": "3665a.dat"
+    },
+    {
+      "part_name": "Plate  1 x  6",
+      "base_file_name": "3666",
+      "file_name": "3666.dat"
+    },
+    {
+      "part_name": "Turntable  2 x  2 Plate Top",
+      "base_file_name": "3679",
+      "file_name": "3679.dat"
+    },
+    {
+      "part_name": "Turntable  2 x  2 Plate Base",
+      "base_file_name": "3680",
+      "file_name": "3680.dat"
+    },
+    {
+      "part_name": "Plate  1 x  4",
+      "base_file_name": "3710",
+      "file_name": "3710.dat"
+    },
+    {
+      "part_name": "Plate  2 x  6",
+      "base_file_name": "3795",
+      "file_name": "3795.dat"
+    },
+    {
+      "part_name": "Windscreen  2 x  4 x  2",
+      "base_file_name": "3823",
+      "file_name": "3823.dat"
+    },
+    {
+      "part_name": "Plate  2 x 10",
+      "base_file_name": "3832",
+      "file_name": "3832.dat"
+    },
+    {
+      "part_name": "Dish  4 x  4 Inverted",
+      "base_file_name": "3960",
+      "file_name": "3960.dat"
+    },
+    {
+      "part_name": "Bar  1 x  4 x  2 with Studs",
+      "base_file_name": "4083",
+      "file_name": "4083.dat"
+    },
+    {
+      "part_name": "Tile  1 x  8",
+      "base_file_name": "4162",
+      "file_name": "4162.dat"
+    },
+    {
+      "part_name": "Plate  1 x  2 with Ladder",
+      "base_file_name": "4175",
+      "file_name": "4175.dat"
+    },
+    {
+      "part_name": "Slope Brick 33  3 x  1",
+      "base_file_name": "4286",
+      "file_name": "4286.dat"
+    },
+    {
+      "part_name": "Slope Brick 33  3 x  1 Inverted with Notch and Thick Front",
+      "base_file_name": "4287",
+      "file_name": "4287a.dat"
+    },
+    {
+      "part_name": "Wing  2 x  3 Right",
+      "base_file_name": "43722",
+      "file_name": "43722.dat"
+    },
+    {
+      "part_name": "Wing  2 x  3 Left",
+      "base_file_name": "43723",
+      "file_name": "43723.dat"
+    },
+    {
+      "part_name": "Wedge  4 x  4 x  0.667 Curved",
+      "base_file_name": "45677",
+      "file_name": "45677.dat"
+    },
+    {
+      "part_name": "Plate  2 x  2 with 2 Wheel Pins",
+      "base_file_name": "4600",
+      "file_name": "4600.dat"
+    },
+    {
+      "part_name": "Wheel Rim  6.4 x  8",
+      "base_file_name": "4624",
+      "file_name": "4624.dat"
+    },
+    {
+      "part_name": "Plate  1 x  2 with Handle Type 2",
+      "base_file_name": "48336",
+      "file_name": "48336.dat"
+    },
+    {
+      "part_name": "Slope Brick Curved  3 x  1",
+      "base_file_name": "50950",
+      "file_name": "50950.dat"
+    },
+    {
+      "part_name": "Slope Brick 31  1 x  1 x  0.667",
+      "base_file_name": "54200",
+      "file_name": "54200.dat"
+    },
+    {
+      "part_name": "Wheel Rim 14 x 18 with Holes on Both Sides (Needs Work)",
+      "base_file_name": "55981",
+      "file_name": "55981.dat"
+    },
+    {
+      "part_name": "Tyre 18/ 56 x 17 Off-Road with Offset Centre",
+      "base_file_name": "56891",
+      "file_name": "56891.dat"
+    },
+    {
+      "part_name": "Car Mudguard  2 x  4 with Central Hole",
+      "base_file_name": "60212",
+      "file_name": "60212.dat"
+    },
+    {
+      "part_name": "Panel  1 x  4 x  3 with Side Flanges",
+      "base_file_name": "60581",
+      "file_name": "60581.dat"
+    },
+    {
+      "part_name": "Window  1 x  2 x  2 without Sill",
+      "base_file_name": "60592",
+      "file_name": "60592.dat"
+    },
+    {
+      "part_name": "Window  2 x  4 x  3 with Square Holes",
+      "base_file_name": "60598",
+      "file_name": "60598.dat"
+    },
+    {
+      "part_name": "Door  2 x  4 x  6 Frame",
+      "base_file_name": "60599",
+      "file_name": "60599.dat"
+    },
+    {
+      "part_name": "Glass for Window  1 x  2 x  2 without Sill",
+      "base_file_name": "60601",
+      "file_name": "60601.dat"
+    },
+    {
+      "part_name": "Window  1 x  2 x  3 Pane with Thick Corner Tabs",
+      "base_file_name": "60608",
+      "file_name": "60608.dat"
+    },
+    {
+      "part_name": "Door  1 x  4 x  6 Smooth with Square Handle Plinth",
+      "base_file_name": "60616",
+      "file_name": "60616a.dat"
+    },
+    {
+      "part_name": "Door  1 x  4 x  6 with 4 Panes and Stud Handle",
+      "base_file_name": "60623",
+      "file_name": "60623.dat"
+    },
+    {
+      "part_name": "Brick  2 x  1 x  1 & 1/3 with Curved Top",
+      "base_file_name": "6091",
+      "file_name": "6091.dat"
+    },
+    {
+      "part_name": "Brick  1 x  4 x  1.333 with Curved Top",
+      "base_file_name": "6191",
+      "file_name": "6191.dat"
+    },
+    {
+      "part_name": "Brick  2 x  3 with Curved Top",
+      "base_file_name": "6215",
+      "file_name": "6215.dat"
+    },
+    {
+      "part_name": "Wedge  3 x  2 Right",
+      "base_file_name": "6564",
+      "file_name": "6564.dat"
+    },
+    {
+      "part_name": "Wedge  3 x  2 Left",
+      "base_file_name": "6565",
+      "file_name": "6565.dat"
+    },
+    {
+      "part_name": "Tile  1 x  6",
+      "base_file_name": "6636",
+      "file_name": "6636.dat"
+    },
+    {
+      "part_name": "Windscreen  3 x  4 x  3",
+      "base_file_name": "84954",
+      "file_name": "84954.dat"
+    },
+    {
+      "part_name": "Slope Brick 31  1 x  2 x  0.667",
+      "base_file_name": "85984",
+      "file_name": "85984.dat"
+    },
+    {
+      "part_name": "Brick  1 x  1 with Stud on 1 Side",
+      "base_file_name": "87087",
+      "file_name": "87087.dat"
+    },
+    {
+      "part_name": "Tyre  6/ 50 x  8 Offset Tread with Centre Band",
+      "base_file_name": "87414",
+      "file_name": "87414.dat"
+    },
+    {
+      "part_name": "Panel  1 x  2 x  3 with Side Supports with Hollow Studs",
+      "base_file_name": "87544",
+      "file_name": "87544.dat"
+    },
+    {
+      "part_name": "Plate  2 x  2 with Groove with 1 Centre Stud",
+      "base_file_name": "87580",
+      "file_name": "87580.dat"
+    },
+    {
+      "part_name": "Tyre 12/ 40 x 11 Wide with Centre Band",
+      "base_file_name": "87697",
+      "file_name": "87697.dat"
+    },
+    {
+      "part_name": "Arch  1 x  3 x  2",
+      "base_file_name": "88292",
+      "file_name": "88292.dat"
+    },
+    {
+      "part_name": "Plate 16 x 16 with Underside Ribs",
+      "base_file_name": "91405",
+      "file_name": "91405.dat"
+    },
+    {
+      "part_name": "Plate  1 x  4 with Two Studs",
+      "base_file_name": "92593",
+      "file_name": "92593.dat"
+    },
+    {
+      "part_name": "Slope Brick Curved  4 x  1 Double",
+      "base_file_name": "93273",
+      "file_name": "93273.dat"
+    },
+    {
+      "part_name": "Slope Brick Curved  4 x  2",
+      "base_file_name": "93606",
+      "file_name": "93606.dat"
+    },
+    {
+      "part_name": "Brick Separator with Top Axle",
+      "base_file_name": "96874",
+      "file_name": "96874.dat"
+    }
+  ]
+}
