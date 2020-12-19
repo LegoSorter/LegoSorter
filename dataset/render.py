@@ -85,10 +85,12 @@ class BrickRenderer:
 
     def prepare_scene(self):
         self.load_pattern_scene()
+
         self.import_brick_scene()
+
         self.set_physics()
         self.__brick_object.active_material = bpy.data.objects["PatternBrick"].active_material
-
+        bpy.data.objects.remove(bpy.data.objects["PatternBrick"])
         bpy.context.window.scene = bpy.data.scenes["TargetScene"]
         bpy.context.scene.camera.location = (7.0, 0.0, 4.0)
         bpy.context.scene.collection.objects.link(self.__brick_object)
@@ -104,19 +106,18 @@ class BrickRenderer:
 
         bpy.context.scene.cycles.device = 'GPU'
         bpy.context.scene.render.engine = 'CYCLES'
-        bpy.context.scene.cycles.samples = 100
+        bpy.context.scene.cycles.samples = 50
 
         # apply a random colour to the brick
         colour = get_random_colour()
         rgb_value = hex_to_rgb(colour[1])
         bpy.data.materials["Material_4_c"].node_tree.nodes["Group"].inputs[0].default_value = rgb_value
-        # bpy.context.scene.render.engine = 'BLENDER_EEVEE'
-        # bpy.context.scene.eevee.taa_render_samples = 256
-        # bpy.context.scene.eevee.taa_samples = 64
 
+        transformation(obj=self.get_brick_object(), shift=kwargs["shift"]*3) if transformation \
+            else print("Transformation not defined")
         self.force_cuda()
         # Skip animation
-        for i in range(0, 100):
+        for i in range(0, 150):
             bpy.context.scene.frame_set(i)
 
         self.adjust_world_to_location(self.__brick_object.matrix_world.to_translation())
